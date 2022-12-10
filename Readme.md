@@ -1,1 +1,2 @@
-# MCMCをRで実装する
+# MCMC_from_scratch
+ゼロからできるMCMCをRで写経する
