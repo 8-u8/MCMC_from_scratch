@@ -1,17 +1,148 @@
 ---
 title: "chp02"
 author: "Kien Knot"
-format: html
+format: 
+  html:
+    toc: true
+    html-math-method: katex
+    
 editor: visual
 ---
 
 ## Chapter 02 そもそもモンテカルロ法とは
 
+1章は本のモチベーションのお話でコードがなく、内容も短いので読もう。
+
+モンテカルロ法というのは乱数を用いた数値計算手法の総称らしい。 \
+計算時間を長くすれば正しい答えにいくらでも近づけることが保証されている方法を指しがち。\
+MCMCのうちの後ろのMC(シンプルなモンテカルロ法)を考えよう。
+
 ### そもそも乱数とは
+
+乱数とは確率 $P(x)$ に従って得られる数字の列
 
 #### 一様乱数
 
+区間 $[a, b]$ の間に存在する実数を等確率で与える乱数を一様乱数という。 \
+どのように実装するかちょっと考えるので一旦飛ばす。
+
 #### ガウス乱数(正規乱数)
+
+ガウス関数はハミルトニアン・モンテカルロ法の導入に必要不可欠な考え方なのでなんとなく覚えておこう。ガウス関数の定義は以下。
+
+$$
+f(x) = \exp(-x^2)
+$$
+
+これをRで描画してみると、本の図2.1と同じ結果が現れる。
+
+```{r}
+gaussian_func <- function(x){
+  out <- exp(-x^2)
+  return(out)
+}
+x <- seq(-4, 4, length.out = 100)
+x_gauss <- gaussian_func(x)
+plot(x, x_gauss, type="l", ylim = c(0, 1.2))
+```
+
+これを積分値が1になるように正規化することで、$x$の確率分布と理解できそう。
+
+$$
+P(x) = \frac{\exp(-x^2)}{\sqrt{\pi}}
+$$
+
+さらに分布の中心が0でなくても良いように$\sigma$を導入すると、
+
+$$
+P_{\sigma}(x) = \frac{\exp(\frac{-(x-\mu)^2}{2\sigma^2})}{\sqrt{2\pi\sigma}} \\
+= \frac{1}{\sqrt{2\pi\sigma}}\exp(-\frac{(x-\mu)^2}{2\sigma^2})
+$$
+
+という形になり、統計学の本で割とシンプルに出会える乱数に見える。
+
+`base`のplotでやるとこんな感じか。確かに図2.2に近い。
+
+```{r}
+gaussian_rnd <- function(x, mu, sigma){
+  out <- 1/sqrt(2*pi*sigma) * exp(-(x-mu)^2/(2*sigma^2))
+  return(out)
+}
+
+x <-  seq(-10, 10, length.out = 100)
+
+df <- data.frame(
+
+  x = x, 
+  p_x_1 = gaussian_rnd(x, mu = 0, sigma = 1),
+  p_x_2 = gaussian_rnd(x, mu = 0, sigma = 2),
+  p_x_4 = gaussian_rnd(x, mu = 0, sigma = 4)
+
+)
+
+ylim <- c(0, 0.45)
+xlim <- c(-10,10)
+ylab <- "P(x)"
+
+plot(df$x, df$p_x_1, type = "l",
+     ylim = ylim, xlim = xlim, col = "red", ylab = ylab)
+par(new=T)
+plot(df$x, df$p_x_2, type = "l",
+     ylim = ylim, xlim = xlim, col = "blue", ylab = ylab)
+par(new=T)
+plot(df$x, df$p_x_4, type = "l",
+     ylim = ylim, xlim = xlim, col = "green", ylab = ylab)
+legend("topright", legend = c("sig = 1", "sig = 2", "sig = 4"),
+       col = c("red", "blue", "green"),
+       lty = c(1,1,1)
+       )
+```
+
+中心極限定理というのがある。何らかの測定には何らか誤差がつきものなので、測定の誤差の要因が\$K\$種類あり、それぞれが独立にランダムな誤差を与えるような状況を考える。このとき、測定結果は、この種類の乱数を足した分だけ、真の値からはずれる(誤差)。 \
+$K$が十分に大きければ、誤差はガウス乱数になる。実験をしてみる。 \
+図2.3の完全再現とはいかなかったが、言いたいことはなんとなく伝わってきたのでヨシ！
+
+```{r}
+out <- 10000
+K <- c(1, 2, 3, 4, 5, 10)
+x <- seq(-1.5, 1.5, length.out = out)
+axis_x <- data.frame(
+  axis1 = x / sqrt(K[1]),
+  axis2 = x / sqrt(K[2]),
+  axis3 = x / sqrt(K[3]),
+  axis4 = x / sqrt(K[4]),
+  axis5 = x / sqrt(K[5]),
+  axis100 = x / sqrt(K[6])
+)
+# ガウス乱数の設定
+s <- sqrt(K)
+
+# 描画の設定
+xlim <- c(-1.5, 1.5)
+
+# 
+unif_add <- function(x, a, b, K){
+  out <- runif(x, min = a, max = b)
+  if(K == 1){
+    return(out)
+  }else{
+    for(i in 1:K){
+      set.seed(i+K)
+      out <- out + runif(x, min = a, max = b)
+    }
+    return(out)
+  }
+}
+
+
+par(mfrow = c(3, 2))
+hist(unif_add(out, -0.5, 0.5, K[1]), xlim = xlim, breaks = 40)
+hist(unif_add(out, -0.5, 0.5, K[2]), xlim = xlim, breaks = 40)
+hist(unif_add(out, -0.5, 0.5, K[3]), xlim = xlim, breaks = 40)
+hist(unif_add(out, -0.5, 0.5, K[4]), xlim = xlim, breaks = 40)
+hist(unif_add(out, -0.5, 0.5, K[5]), xlim = xlim, breaks = 40)
+hist(unif_add(out, -0.5, 0.5, K[6]), xlim = xlim, breaks = 40)
+```
 
 #### 乱数と疑似乱数の違い
 
@@ -31,4 +162,4 @@ editor: visual
 
 #### ガウス分布から得られる期待値
 
-### ランダム性が本質的な例 
+### ランダム性が本質的な例
