@@ -298,7 +298,7 @@ P_{\sigma}(x) = \frac{\exp(\frac{-(x-\mu)^2}{2\sigma^2})}{\sqrt{2\pi\sigma}} \\
 <p><span class="math display">
 x_{n+1} = ax_n + b(mod M)
 </span></p>
-<p>という漸化式を考える。<span class="math inline">\mod M</span>は、$M$で割った余りを意味する。<br>
+<p>という漸化式を考える。<span class="math inline">\mod M</span>は、<span class="math inline">M</span>で割った余りを意味する。<br>
 初項となる<span class="math inline">0\leq x_0 \leq M-1、 x_0</span>は整数をいい感じに決めると、この漸化式に従って、乱数っぽい数列を作ることができる。初項が同じなら、漸化式に従って必ず同じ数列が生成されるため、厳密には周期性がある。「ほとんど乱数に見える列」であり、分布二偏りが生まれうることには注意したほうが良い。</p>
 <p>大規模な乱数生成が必要となる計算をする場合は、短い周期性を持つ擬似乱数生成アルゴリズムは望ましくない。(線形合同法の周期は<span class="math inline">2^{31}-1</span>らしい)。<br>
 加えてシード値の設定を見することで同じ乱数列を多く作ってしまうこともある。</p>
@@ -309,6 +309,65 @@ x_{n+1} = ax_n + b(mod M)
 <h3 class="anchored" data-anchor-id="一様乱数を用いた積分">一様乱数を用いた積分</h3>
 <section id="一様乱数を用いた円周率の計算" class="level4">
 <h4 class="anchored" data-anchor-id="一様乱数を用いた円周率の計算">一様乱数を用いた円周率の計算</h4>
+<ul>
+<li><p>半径1の、1/4の円の面積を求める事を考える。</p>
+<ul>
+<li><p>面積は<span class="math inline">\pi/4</span>と考えられる。これは算数。</p></li>
+<li><p>ということは、4倍すれば円周率が求められるということ。</p></li>
+<li><p>半径1の円の方程式を思い出すと、<span class="math inline">x^2 + y^2 = 1</span></p>
+<ul>
+<li><p>xとyはそれぞれ適当な乱数と考える。</p></li>
+<li><p>これらの乱数が、円の内側に落ちた回数を数えることで、<br>
+「点が円の内側に落ちる『確率』」は<span class="math inline">\pi/4</span>に近くなるはず。</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>), <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">asp=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chp02_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n_in <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>pi_est <span class="ot">&lt;-</span> <span class="fu">numeric</span>()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(n_iter<span class="sc">+</span><span class="dv">1</span>)){</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> y<span class="sc">^</span><span class="dv">2</span> <span class="sc">&lt;</span> <span class="dv">1</span>){</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    n_in <span class="ot">&lt;-</span> n_in <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  pi_est[i] <span class="ot">&lt;-</span><span class="dv">4</span> <span class="sc">*</span>  n_in <span class="sc">/</span> i</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># シンプルな結果の記述</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(n_iter<span class="sc">+</span><span class="dv">1</span>)), pi_est, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"iter"</span>, <span class="at">ylab =</span> <span class="st">"estimated pi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chp02_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">tail</span>(pi_est))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.141857 3.141943 3.142028 3.142114 3.141800 3.141886</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 誤差を出す</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> pi <span class="sc">-</span> pi_est</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(n_iter<span class="sc">+</span><span class="dv">1</span>)),err, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"iter"</span>, <span class="at">ylab =</span> <span class="st">"estimated pi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chp02_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(err))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1.1415927  0.1415927 -0.1917407 -0.3584073 -0.4584073 -0.5250740</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">tail</span>(err))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.0002640891 -0.0003499292 -0.0004357521 -0.0005215578 -0.0002073464
+[6] -0.0002931578</code></pre>
+</div>
+</div>
 </section>
 <section id="一様乱数を用いた定積分" class="level4">
 <h4 class="anchored" data-anchor-id="一様乱数を用いた定積分">一様乱数を用いた定積分</h4>
