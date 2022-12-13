@@ -377,21 +377,55 @@ x_{n+1} = ax_n + b(mod M)
 </span></p>
 <p>を考えていく。(リーマン積分の)定義に従えば、関数をx軸基準で短冊型に切り、長方形の形で近似することで求める。より厳密にはこの切幅を限りなく小さくしていくことで、積分を可能にする。</p>
 <p><span class="math inline">x</span>を、区間$[a,b]$の一様乱数とする。乱数を1つ選んで$f(x)$を選ぶと、値が返される。<br>
-これをK個の乱数で作っていくと、区間$[a,b] $$</p>
+これをK個の乱数で作っていくと、区間<span class="math inline">[a,b]</span>に点がまんべんなく広がる。</p>
+<p>このときの平均値 <span class="math inline">E(f(x)) = \frac{1}{K}\Sigma_{k=1}^K f(x^{(k)})</span>は、知られている通り以下。</p>
+<p><span class="math display">
+\frac{1}{b-a}\int_a^bdxf(x)
+</span></p>
+<p>Kを十分大きくすれば、これは実質積分値。<span class="math inline">f(x)=\sqrt{1-x^2}</span> を例にすれば、<br>
+これは<span class="math inline">\frac{\pi}{4}</span>に近くなる。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>myfunc <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"pi/4 is: "</span>, pi<span class="sc">/</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "pi/4 is: 0.785398163397448"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2022</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>sum_y <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>mean_y <span class="ot">&lt;-</span> <span class="fu">numeric</span>()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_iter){</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">myfunc</span>(x)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  sum_y <span class="ot">&lt;-</span> sum_y <span class="sc">+</span> y</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  mean_y[i] <span class="ot">&lt;-</span> sum_y<span class="sc">/</span>i</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mean_y, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new=</span>T)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span>pi<span class="sc">/</span><span class="dv">4</span>, <span class="at">col=</span><span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="chp02_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 </section>
-<section id="ガウス積分充填" class="level4">
-<h4 class="anchored" data-anchor-id="ガウス積分充填">ガウス積分～充填</h4>
-</section>
-<section id="サンプリングが必要になる例" class="level4">
-<h4 class="anchored" data-anchor-id="サンプリングが必要になる例">サンプリングが必要になる例</h4>
+<section id="ガウス積分重点サンプリングが必要になる例" class="level4">
+<h4 class="anchored" data-anchor-id="ガウス積分重点サンプリングが必要になる例">ガウス積分～重点サンプリングが必要になる例</h4>
+<p>ガウス関数を積分することを考える。</p>
+<p><span class="math display">
+\frac{1}{\sqrt{2\pi}}\exp{-(\frac{x^2}{2})}
+</span></p>
+<p>やってみると、あんまり良く収束しない(らしい)(未完)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gauss_func <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>(x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 </section>
 <section id="期待値と積分" class="level3">
