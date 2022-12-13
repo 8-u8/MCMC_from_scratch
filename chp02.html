@@ -371,9 +371,27 @@ x_{n+1} = ax_n + b(mod M)
 </section>
 <section id="一様乱数を用いた定積分" class="level4">
 <h4 class="anchored" data-anchor-id="一様乱数を用いた定積分">一様乱数を用いた定積分</h4>
+<p><span class="math inline">y=f(x)</span>$の定積分</p>
+<p><span class="math display">
+\int_{a}^bf(x)dx
+</span></p>
+<p>を考えていく。(リーマン積分の)定義に従えば、関数をx軸基準で短冊型に切り、長方形の形で近似することで求める。より厳密にはこの切幅を限りなく小さくしていくことで、積分を可能にする。</p>
+<p><span class="math inline">x</span>を、区間$[a,b]$の一様乱数とする。乱数を1つ選んで$f(x)$を選ぶと、値が返される。<br>
+これをK個の乱数で作っていくと、区間$[a,b] $$</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>myfunc <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>n_iter <span class="ot">&lt;-</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="ガウス積分充填サンプリングが必要になる例" class="level4">
-<h4 class="anchored" data-anchor-id="ガウス積分充填サンプリングが必要になる例">ガウス積分～充填サンプリングが必要になる例</h4>
+<section id="ガウス積分充填" class="level4">
+<h4 class="anchored" data-anchor-id="ガウス積分充填">ガウス積分～充填</h4>
+</section>
+<section id="サンプリングが必要になる例" class="level4">
+<h4 class="anchored" data-anchor-id="サンプリングが必要になる例">サンプリングが必要になる例</h4>
 </section>
 </section>
 <section id="期待値と積分" class="level3">
