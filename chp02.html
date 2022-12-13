@@ -242,7 +242,7 @@ P_{\sigma}(x) = \frac{\exp(\frac{-(x-\mu)^2}{2\sigma^2})}{\sqrt{2\pi\sigma}} \\
 <p><img src="chp02_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>中心極限定理というのがある。何らかの測定には何らか誤差がつきものなので、測定の誤差の要因が$K$種類あり、それぞれが独立にランダムな誤差を与えるような状況を考える。<br>
+<p>中心極限定理というのがある。何らかの測定には何らか誤差がつきものなので、測定の誤差の要因が<span class="math inline">K</span>種類あり、それぞれが独立にランダムな誤差を与えるような状況を考える。<br>
 このとき、測定結果は、この種類の乱数を足した分だけ、真の値からはずれる(誤差)。<br>
 <span class="math inline">K</span>が十分に大きければ、誤差はガウス乱数になる。実験をしてみる。<br>
 図2.3の完全再現とはいかなかったが、言いたいことはなんとなく伝わってきたのでヨシ！</p>
@@ -372,12 +372,9 @@ x_{n+1} = ax_n + b(mod M)
 </section>
 <section id="一様乱数を用いた定積分" class="level4">
 <h4 class="anchored" data-anchor-id="一様乱数を用いた定積分">一様乱数を用いた定積分</h4>
-<p><span class="math inline">y=f(x)</span>$の定積分</p>
-<p><span class="math display">
-\int_{a}^bf(x)dx
-</span></p>
-<p>を考えていく。(リーマン積分の)定義に従えば、関数をx軸基準で短冊型に切り、長方形の形で近似することで求める。より厳密にはこの切幅を限りなく小さくしていくことで、積分を可能にする。</p>
-<p><span class="math inline">x</span>を、区間$[a,b]$の一様乱数とする。乱数を1つ選んで$f(x)$を選ぶと、値が返される。<br>
+<p><span class="math inline">y=f(x)</span>の定積分<span class="math inline">\int_{a}^bf(x)dx</span>を考えていく。(リーマン積分の)定義に従えば、関数をx軸基準で短冊型に切り、<br>
+長方形の形で近似することで求める。より厳密にはこの切幅を限りなく小さくしていくことで、積分を可能にする。</p>
+<p><span class="math inline">x</span>を、区間<span class="math inline">[a,b]</span>の一様乱数とする。乱数を1つ選んで<span class="math inline">f(x)</span>を選ぶと、値が返される。<br>
 これをK個の乱数で作っていくと、区間<span class="math inline">[a,b]</span>に点がまんべんなく広がる。</p>
 <p>このときの平均値 <span class="math inline">E(f(x)) = \frac{1}{K}\Sigma_{k=1}^K f(x^{(k)})</span>は、知られている通り以下。</p>
 <p><span class="math display">
