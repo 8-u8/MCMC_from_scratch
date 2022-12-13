@@ -1,2 +1,0 @@
-# MCMC_from_scratch
-ゼロからできるMCMCをRで写経する
